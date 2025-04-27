@@ -1,0 +1,34 @@
+** Prerequisite 1. Root access > sudo su
+                2. Free Disk(SD card , USB Drive etc)
+
+Step 1 - List disk
+#lsblk or fdisk -l
+#lsblk /dev/sda or /dev/mmcblk (for specific disk)
+It will list existing disk along with partitions 
+
+Step 2 - Specify the disk partition 
+#fdisk /dev/sda 
+
+Step 3 - Request a new partition
+Press ‘n‘ to request for a new partition. On pressing “enter” key, the system will ask for partition type, either primary or extended.
+Press ‘p‘ for primary and ‘e‘ for extended partition.
+
+Step 4 - Specify partition number, first sector and last sector
+Next, assign a partition number. Then specify the size of partition.For size you need to tell two things: first sector and last sector.
+The best way is to choose the default value of First sector (manual specification may result in wastage of sectors if you are not aware about the details). 
+Simple press “enter” key to choose the default starting sector.
+
+Step 5 - Specify the partition type
+The default partition type is “Linux”. If you want to change it to something else then press the ‘t’ key. 
+If you don’t know the type code then use the ‘L’ key to see a list of all the available types.
+
+Step 6 - Save the Partition Table
+Use the ‘w‘ command to save the partition table. 
+It is must to do this otherwise the partition will not be created.
+
+Step 7 - Initiate kernel re-read of partition table
+#partprobe /dev/sda
+#lsblk (run lsblk to check)
+Use the partprobe command to force a re-read of the partition table
+
+
