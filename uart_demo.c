@@ -26,7 +26,7 @@ int main(){
         
         // To avoid indefinite blocking if no data is received, configure read timeouts
         options.c_cc[VMIN]  = 0; // Minimum number of characters for non-canonical read
-        options.c_cc[VTIME] = 10; // Timeout in deciseconds (1s)
+        options.c_cc[VTIME] = 10; // Timeout in seconds (1s)
 
         // Apply the settings
         tcflush(fd,TCIFLUSH);
