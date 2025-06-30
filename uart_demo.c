@@ -16,18 +16,24 @@ int main(){
         }
         /* Read current serial port settings */
         // Set up serial port
-        tcgetattr(fd,&options);
+        tcgetattr(fd,&options); // get current setting before modifying
 
         options.c_cflag = B115200 | CS8 | CLOCAL |CREAD;
         // or cfsetspeed(&options, B115200);
         options.c_iflag = IGNPAR;
         options.c_oflag = 0;
         options.c_lflag = 0;
+        
+        // To avoid indefinite blocking if no data is received, configure read timeouts
+        options.c_cc[VMIN]  = 0; // Minimum number of characters for non-canonical read
+        options.c_cc[VTIME] = 10; // Timeout in deciseconds (1s)
 
         // Apply the settings
         tcflush(fd,TCIFLUSH);
-        tcsetattr(fd,TCSANOW,&options);
-
+        if (tcsetattr(fd, TCSANOW, &options) != 0) {
+                perror("Failed to set serial port attributes");
+                return -1;
+            }
         /* Write to serial port */
         strcpy(buf,"Hello World !\n\r");
         len = strlen(buf);
@@ -38,9 +44,10 @@ int main(){
         sleep(5);
 
         /* Read from serial port */
+        memset(buf, 0, sizeof(buf));  // Clear buffer before reading
         len = read(fd , buf , sizeof(buf));
         printf("Received %d bytes \n",len);
-        printf("Received string.. %s\n",buf);
+        printf("Received string.. %.*s\n", len, buf); // If the received data is not null-terminated.
 
         close(fd);
         return 0;
